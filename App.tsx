@@ -22,7 +22,7 @@ export default function App() {
   useEffect(() => {
     async function loadFonts() {
       await Font.loadAsync({
-        Handwriting: require('./assets/fonts/handwritingCory.ttf'),
+        Handwriting: require('./assets/fonts/Corynewfont.ttf'),
       });
       setFontsLoaded(true);
     }
