@@ -11,6 +11,8 @@ import {
   Image,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { useNavigation } from "@react-navigation/native";
+
 const themes = {
   wedding: {
     fontColor: "#7b4b94",
@@ -33,19 +35,19 @@ export default function ComposeScreen() {
   const [message, setMessage] = useState("");
   const [selectedTheme, setSelectedTheme] = useState("thankYou");
   const [letterImage, setLetterImage] = useState<string | null>(null);
-
-
+  const navigation = useNavigation();
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
     });
-  
+
     if (!result.canceled) {
       setLetterImage(result.assets[0].uri);
     }
   };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Write Your Flutter ✍️</Text>
@@ -56,11 +58,23 @@ export default function ComposeScreen() {
         value={message}
         onChangeText={setMessage}
       />
-      <View style={styles.preview}>
-        <Text style={styles.previewLabel}>Live Preview:</Text>
-        <Text style={styles.previewText}>{message}</Text>
+      <View
+        style={{
+          backgroundColor: themes[selectedTheme].bgColor,
+          padding: 16,
+          borderRadius: 10,
+        }}
+      >
+   <Text style={{ fontFamily: 'Handwriting', fontSize: 20 }}>
+  {message}
+</Text>
+        {letterImage && (
+          <Image
+            source={{ uri: letterImage }}
+            style={{ width: 200, height: 200, marginTop: 10 }}
+          />
+        )}
       </View>
-
       {/* ***** THEME PICKER ***** */}
       <View style={{ flexDirection: "row", gap: 8 }}>
         {Object.keys(themes).map((themeKey) => (
@@ -77,16 +91,36 @@ export default function ComposeScreen() {
           </Pressable>
         ))}
       </View>
-      <Pressable onPress={pickImage}>
+      <Pressable style={styles.button} onPress={pickImage}>
         <Text>Add Image to Letter</Text>
       </Pressable>{" "}
-      <Button title="Add Image to Letter" onPress={pickImage} />
-      {letterImage && (
+      {/* <Button title="Add Image to Letter" onPress={pickImage} /> */}
+      {/* {letterImage && (
         <Image
           source={{ uri: letterImage }}
           style={{ width: 200, height: 200 }}
         />
-      )}
+      )} */}
+      <Pressable
+        onPress={() =>
+          navigation.navigate("Preview", {
+            message,
+            letterImage,
+            theme: selectedTheme,
+          })
+        }
+        style={{
+          backgroundColor: "#333",
+          padding: 12,
+          borderRadius: 8,
+          marginTop: 20,
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ color: "white", fontWeight: "600" }}>
+          Preview Your Flutter
+        </Text>
+      </Pressable>
     </ScrollView>
   );
 }
@@ -122,5 +156,11 @@ const styles = StyleSheet.create({
   },
   previewText: {
     fontSize: 18,
+  },
+  button: {
+    backgroundColor: "lightgray",
+    padding: 20,
+    borderRadius: 10,
+    marginTop: 20,
   },
 });
