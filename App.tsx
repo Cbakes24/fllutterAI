@@ -8,15 +8,64 @@ import ComposeScreen from './screens/ComposeScreen';
 import { View, StyleSheet, Text, ActivityIndicator  } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as Font from 'expo-font';
-// import AppNavigator from './AppNavigator'; // if you moved the nav logic out
 import { useState, useEffect } from 'react';
-
+import { Icon } from './components/Icons';
+import { useAppTheme, useThemeProvider } from './utils/useAppTheme';
+import { observer } from 'mobx-react';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-export default function App() {
+const TabNavigator = observer(function TabNavigator() {
+  const { theme } = useAppTheme();
 
+  return (
+    <Tab.Navigator initialRouteName="Upload">
+      <Tab.Screen 
+        name="Upload" 
+        component={UploadScreen} 
+        options={{ 
+          tabBarIcon: ({ focused }) => (
+            <Icon 
+              icon="dollar" 
+              color={focused ? theme.colors.tint : theme.colors.tintInactive} 
+              size={30} 
+            />
+          ),
+        }} 
+      />
+      <Tab.Screen 
+        name="Compose" 
+        component={ComposeScreen} 
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Icon 
+              icon="chatBubble" 
+              color={focused ? theme.colors.tint : theme.colors.tintInactive} 
+              size={30} 
+            />
+          ),
+        }}
+      />
+      <Tab.Screen 
+        name="Preview" 
+        component={PreviewScreen} 
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Icon 
+              icon="view" 
+              color={focused ? theme.colors.tint : theme.colors.tintInactive} 
+              size={30} 
+            />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+});
+
+export const AppNavigator = observer(function AppNavigator() {
+  const { themeScheme, navigationTheme, setThemeContextOverride, ThemeProvider } = useThemeProvider();
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
@@ -38,15 +87,18 @@ export default function App() {
       </View>
     );
   }
+
   return (
-    <NavigationContainer>
-    <Tab.Navigator initialRouteName="Upload">
-      <Tab.Screen name="Upload" component={UploadScreen} />
-      <Tab.Screen name="Compose" component={ComposeScreen} />
-      <Tab.Screen name="Preview" component={PreviewScreen} />
-    </Tab.Navigator>
-  </NavigationContainer>
+    <ThemeProvider value={{ themeScheme, setThemeContextOverride }}>
+      <NavigationContainer theme={navigationTheme}>
+        <TabNavigator />
+      </NavigationContainer>
+    </ThemeProvider>
   );
+});
+
+export default function App() {
+  return <AppNavigator />;
 }
 
 const styles = StyleSheet.create({

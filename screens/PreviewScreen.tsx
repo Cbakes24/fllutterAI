@@ -34,9 +34,17 @@ const themes = {
 export default function PreviewScreen() {
   const route = useRoute();
   const navigation = useNavigation();
+
+  // If no message exists or it's the default placeholder, redirect back to Compose
+  if (!route.params?.message || route.params.message === "Enter your message here...") {
+    alert("Please write a message in the Compose tab first");
+    navigation.navigate("Compose");
+    return null;
+  }
+
   const { message, letterImage, theme } = route.params as {
     message: string;
-    letterImage: string | null;
+    letterImage: string | null; 
     theme: keyof typeof themes;
   };
 

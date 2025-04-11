@@ -32,10 +32,24 @@ const themes = {
 };
 
 export default function ComposeScreen() {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("Enter your message here...");
   const [selectedTheme, setSelectedTheme] = useState("thankYou");
   const [letterImage, setLetterImage] = useState<string | null>(null);
   const navigation = useNavigation();
+
+  const handlePreviewPress = () => {
+    if (!message || message === "Enter your message here...") {
+      alert("Please write a message before previewing");
+      return;
+    }
+
+    navigation.navigate("Preview", {
+      message,
+      letterImage,
+      theme: selectedTheme,
+    });
+  };
+
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -57,6 +71,11 @@ export default function ComposeScreen() {
         placeholder="Type your message here..."
         value={message}
         onChangeText={setMessage}
+        onFocus={() => {
+          if (message === "Enter your message here...") {
+            setMessage("");
+          }
+        }}
       />
       <View
         style={{
@@ -102,13 +121,7 @@ export default function ComposeScreen() {
         />
       )} */}
       <Pressable
-        onPress={() =>
-          navigation.navigate("Preview", {
-            message,
-            letterImage,
-            theme: selectedTheme,
-          })
-        }
+        onPress={handlePreviewPress}
         style={{
           backgroundColor: "#333",
           padding: 12,
