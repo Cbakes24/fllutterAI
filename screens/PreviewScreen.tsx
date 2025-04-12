@@ -9,9 +9,10 @@ import {
   ScrollView,
   Pressable,
 } from "react-native";
-import { useRoute, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import RNHTMLtoPDF from "react-native-html-to-pdf";
 import * as Sharing from "expo-sharing";
+import { useFlutter } from "../context/FlutterContext";
 
 const themes = {
   wedding: {
@@ -32,23 +33,17 @@ const themes = {
 };
 
 export default function PreviewScreen() {
-  const route = useRoute();
+  const { message, letterImage, selectedTheme } = useFlutter();
   const navigation = useNavigation();
 
   // If no message exists or it's the default placeholder, redirect back to Compose
-  if (!route.params?.message || route.params.message === "Enter your message here...") {
+  if (!message || message === "Enter your message here...") {
     alert("Please write a message in the Compose tab first");
     navigation.navigate("Compose");
     return null;
   }
 
-  const { message, letterImage, theme } = route.params as {
-    message: string;
-    letterImage: string | null; 
-    theme: keyof typeof themes;
-  };
-
-  const selectedTheme = themes[theme] || themes.thankYou;
+  const selectedThemeStyles = themes[selectedTheme] || themes.thankYou;
 
   // Generate PDF Function
   const generatePDF = async () => {
@@ -59,8 +54,8 @@ export default function PreviewScreen() {
             body {
               font-family: sans-serif;
               padding: 24px;
-              background-color: ${selectedTheme.bgColor};
-              color: ${selectedTheme.fontColor};
+              background-color: ${selectedThemeStyles.bgColor};
+              color: ${selectedThemeStyles.fontColor};
             }
             .message {
               font-size: 18px;
@@ -112,8 +107,8 @@ export default function PreviewScreen() {
         style={[
           styles.previewBox,
           {
-            backgroundColor: selectedTheme.bgColor,
-            borderColor: selectedTheme.fontColor,
+            backgroundColor: selectedThemeStyles.bgColor,
+            borderColor: selectedThemeStyles.fontColor,
           },
         ]}
       >
@@ -131,9 +126,7 @@ export default function PreviewScreen() {
 
       <Pressable
         style={styles.pressable}
-        onPress={() => {
-          generatePDF();
-        }}
+        onPress={generatePDF}
       >
         <Text style={styles.pressableText}>Download as PDF</Text>
       </Pressable>
@@ -162,21 +155,30 @@ const styles = StyleSheet.create({
   previewBox: {
     padding: 16,
     borderRadius: 12,
-    borderWidth: 2,
+    borderWidth: 5,
     width: "100%",
     minHeight: 200,
     marginBottom: 30,
+    flex: 1,
+    alignItems: "center",
+    // justifyContent: "center",
   },
   messageText: {
     fontSize: 18,
     lineHeight: 28,
-    marginBottom: 10,
+    flexWrap: "wrap",
+    flex: 1,
   },
   previewImage: {
-    width: "100%",
+    width: 200,
     height: 200,
     borderRadius: 8,
+    // float: "right", // This won't work in RN but shows intent
+    marginTop: 50,
+    alignSelf: "center",
+
   },
+    
   pressable: {
     backgroundColor: "#333",
     padding: 12,

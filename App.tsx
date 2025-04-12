@@ -11,6 +11,7 @@ import * as Font from 'expo-font';
 import { useState, useEffect } from 'react';
 import { Icon } from './components/Icons';
 import { useAppTheme, useThemeProvider } from './utils/useAppTheme';
+import { FlutterProvider } from './context/FlutterContext';
 import { observer } from 'mobx-react';
 
 const Stack = createNativeStackNavigator();
@@ -90,9 +91,11 @@ export const AppNavigator = observer(function AppNavigator() {
 
   return (
     <ThemeProvider value={{ themeScheme, setThemeContextOverride }}>
-      <NavigationContainer theme={navigationTheme}>
-        <TabNavigator />
-      </NavigationContainer>
+      <FlutterProvider>
+        <NavigationContainer theme={navigationTheme}>
+          <TabNavigator />
+        </NavigationContainer>
+      </FlutterProvider>
     </ThemeProvider>
   );
 });
