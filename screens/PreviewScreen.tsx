@@ -124,16 +124,13 @@ export default function PreviewScreen() {
         )}
       </View>
 
-      <Pressable
-        style={styles.pressable}
-        onPress={generatePDF}
-      >
+      <Pressable style={styles.pressable} onPress={generatePDF}>
         <Text style={styles.pressableText}>Download as PDF</Text>
       </Pressable>
 
       <Pressable
         style={[styles.pressable, { backgroundColor: "#999" }]}
-        onPress={() => navigation.goBack()}
+        onPress={() => navigation.navigate("Compose")}
       >
         <Text style={styles.pressableText}>Back to Compose</Text>
       </Pressable>
@@ -176,9 +173,8 @@ const styles = StyleSheet.create({
     // float: "right", // This won't work in RN but shows intent
     marginTop: 50,
     alignSelf: "center",
-
   },
-    
+
   pressable: {
     backgroundColor: "#333",
     padding: 12,

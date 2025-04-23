@@ -1,5 +1,5 @@
 // /screens/ComposeScreen.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   TextInput,
@@ -12,6 +12,21 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import { useFlutter } from "../context/FlutterContext";
+
+const availableFonts = [
+  {
+    name: "CorysFont",
+    url: "https://grbxgiwcabklftniwqpf.supabase.co/storage/v1/object/public/fonts//Corynewfont.ttf",
+  },
+  {
+    name: "BouncyHand",
+    url: "https://your-project.supabase.co/storage/v1/object/public/fonts/BouncyHand.ttf",
+  },
+  {
+    name: "ClassicInk",
+    url: "https://your-project.supabase.co/storage/v1/object/public/fonts/ClassicInk.ttf",
+  },
+];
 
 const themes = {
   wedding: {
@@ -32,15 +47,17 @@ const themes = {
 };
 
 export default function ComposeScreen() {
-  const { 
-    message, 
-    setMessage, 
-    letterImage, 
-    setLetterImage, 
-    selectedTheme, 
-    setSelectedTheme 
+  const {
+    message,
+    setMessage,
+    letterImage,
+    setLetterImage,
+    selectedTheme,
+    setSelectedTheme,
+    fontName,
+    setFontName,
+    setFontUrl,
   } = useFlutter();
-  const navigation = useNavigation();
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -76,9 +93,27 @@ export default function ComposeScreen() {
           borderRadius: 10,
         }}
       >
-        <Text style={{ fontFamily: 'Handwriting', fontSize: 20 }}>
-          {message}
-        </Text>
+        <Text style={{ fontSize: 18, fontWeight: "500", marginTop: 32 }}>Choose Font:</Text>
+<View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
+  {availableFonts.map((font) => (
+    <Pressable
+      key={font.name}
+      onPress={() => {
+        setFontName(font.name);
+        setFontUrl(font.url);
+      }}
+      style={{
+        padding: 10,
+        borderWidth: 1,
+        borderColor: fontName === font.name ? "black" : "#ccc",
+        borderRadius: 6,
+      }}
+    >
+      <Text>{font.name}</Text>
+    </Pressable>
+  ))}
+</View>
+        <Text style={{ fontFamily: fontName, fontSize: 20 }}>{message}</Text>
         {letterImage && (
           <Image
             source={{ uri: letterImage }}
@@ -105,6 +140,7 @@ export default function ComposeScreen() {
       <Pressable style={styles.button} onPress={pickImage}>
         <Text>Add Image to Letter</Text>
       </Pressable>
+      <Text style={{ fontFamily: fontName, fontSize: 20 }}>{message}</Text>
     </ScrollView>
   );
 }

@@ -13,6 +13,7 @@ import { Icon } from './components/Icons';
 import { useAppTheme, useThemeProvider } from './utils/useAppTheme';
 import { FlutterProvider } from './context/FlutterContext';
 import { observer } from 'mobx-react';
+import fontUploadScreen from './screens/fontUploadScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -35,6 +36,20 @@ const TabNavigator = observer(function TabNavigator() {
           ),
         }} 
       />
+      <Tab.Screen 
+        name="FontUpload" 
+        component={fontUploadScreen} 
+        options={{ 
+          tabBarIcon: ({ focused }) => (
+            <Icon 
+              icon="check" 
+              color={focused ? theme.colors.tint : theme.colors.tintInactive} 
+              size={30} 
+            />
+          ),
+        }} 
+      />
+      
       <Tab.Screen 
         name="Compose" 
         component={ComposeScreen} 
