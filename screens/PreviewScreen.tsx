@@ -33,7 +33,17 @@ const themes = {
 };
 
 export default function PreviewScreen() {
-  const { message, letterImage, selectedTheme } = useFlutter();
+  const {
+    message,
+    setMessage,
+    letterImage,
+    setLetterImage,
+    selectedTheme,
+    setSelectedTheme,
+    fontName,
+    setFontName,
+    setFontUrl,
+  } = useFlutter();
   const navigation = useNavigation();
 
   // If no message exists or it's the default placeholder, redirect back to Compose
@@ -112,9 +122,7 @@ export default function PreviewScreen() {
           },
         ]}
       >
-        <Text style={{ fontFamily: "Handwriting", fontSize: 20 }}>
-          {message}
-        </Text>
+        <Text style={{ fontFamily: fontName, fontSize: 20 }}>{message}</Text>
         {letterImage && (
           <Image
             source={{ uri: letterImage }}

@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import * as Font from "expo-font";
+import * as FileSystem from "expo-file-system";
 
 type FlutterContextType = {
   message: string;
@@ -24,7 +25,7 @@ export function FlutterProvider({ children }: { children: React.ReactNode }) {
 
   const [fontLoaded, setFontLoaded] = useState(false);
   const [fontName, setFontName] = useState("Handwriting");
-  const [fontUrl, setFontUrl] = useState("https://your-supabase-font-url.ttf"); // replace with your test URL
+  const [fontUrl, setFontUrl] = useState("https://grbxgiwcabklftniwqpf.supabase.co/storage/v1/object/public/fonts/Corynewfont.ttf"); // replace with your test URL
   // const [fontUrl, setFontUrl] = useState("https://grbxgiwcabklftniwqpf.supabase.co/storage/v1/object/public/fonts//Corynewfont.ttf"); // replace with your test URL
 
 

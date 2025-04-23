@@ -12,6 +12,8 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import { useFlutter } from "../context/FlutterContext";
+import * as Font from "expo-font";
+import * as FileSystem from "expo-file-system";
 
 const availableFonts = [
   {
@@ -19,12 +21,12 @@ const availableFonts = [
     url: "https://grbxgiwcabklftniwqpf.supabase.co/storage/v1/object/public/fonts//Corynewfont.ttf",
   },
   {
-    name: "BouncyHand",
-    url: "https://your-project.supabase.co/storage/v1/object/public/fonts/BouncyHand.ttf",
+    name: "ShodowLight",
+    url: "https://grbxgiwcabklftniwqpf.supabase.co/storage/v1/object/public/fonts//ShadowsIntoLight-Regular.ttf",
   },
   {
-    name: "ClassicInk",
-    url: "https://your-project.supabase.co/storage/v1/object/public/fonts/ClassicInk.ttf",
+    name: "HeathersFont",
+    url: "https://grbxgiwcabklftniwqpf.supabase.co/storage/v1/object/public/fonts//GreatVibes-Regular.ttf",
   },
 ];
 
@@ -71,6 +73,19 @@ export default function ComposeScreen() {
     }
   };
 
+  const pickFont = async (font: any) => {
+    try {
+      await Font.loadAsync({
+        [font.name]: font.url
+      });
+      setFontName(font.name);
+      setFontUrl(font.url);
+      console.log("Font loaded:", font.name);
+    } catch (error) {
+      console.error("Error loading font:", error);
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Write Your Flutter ✍️</Text>
@@ -93,26 +108,32 @@ export default function ComposeScreen() {
           borderRadius: 10,
         }}
       >
-        <Text style={{ fontSize: 18, fontWeight: "500", marginTop: 32 }}>Choose Font:</Text>
-<View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
-  {availableFonts.map((font) => (
-    <Pressable
-      key={font.name}
-      onPress={() => {
-        setFontName(font.name);
-        setFontUrl(font.url);
-      }}
-      style={{
-        padding: 10,
-        borderWidth: 1,
-        borderColor: fontName === font.name ? "black" : "#ccc",
-        borderRadius: 6,
-      }}
-    >
-      <Text>{font.name}</Text>
-    </Pressable>
-  ))}
-</View>
+        <Text style={{ fontSize: 18, fontWeight: "500", marginTop: 32 }}>
+          Choose Font:
+        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            gap: 8,
+            marginTop: 12,
+          }}
+        >
+          {availableFonts.map((font) => (
+            <Pressable
+              key={font.name}
+              onPress={() => pickFont(font)}
+              style={{
+                padding: 10,
+                borderWidth: 1,
+                borderColor: fontName === font.name ? "black" : "#ccc",
+                borderRadius: 6,
+              }}
+            >
+              <Text>{font.name}</Text>
+            </Pressable>
+          ))}
+        </View>
         <Text style={{ fontFamily: fontName, fontSize: 20 }}>{message}</Text>
         {letterImage && (
           <Image
@@ -139,6 +160,12 @@ export default function ComposeScreen() {
       </View>
       <Pressable style={styles.button} onPress={pickImage}>
         <Text>Add Image to Letter</Text>
+      </Pressable>
+      <Pressable 
+        style={[styles.button, { backgroundColor: '#e0e0e0' }]} 
+        onPress={() => setMessage("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.")}
+      >
+        <Text>Fill Letter with Lorem Ipsum</Text>
       </Pressable>
       <Text style={{ fontFamily: fontName, fontSize: 20 }}>{message}</Text>
     </ScrollView>
