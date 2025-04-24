@@ -1,5 +1,5 @@
 // /screens/ComposeScreen.tsx
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   TextInput,
@@ -26,7 +26,7 @@ const availableFonts = [
   },
   {
     name: "HeathersFont",
-    url: "https://grbxgiwcabklftniwqpf.supabase.co/storage/v1/object/public/fonts//GreatVibes-Regular.ttf",
+    url: "https://grbxgiwcabklftniwqpf.supabase.co/storage/v1/object/public/fonts//HeatherFont.otf",
   },
 ];
 
@@ -48,6 +48,27 @@ const themes = {
   },
 };
 
+
+const cloudsLetter = `
+Dear Tifa, 
+
+I'm not really sure how to start this, or even if I should. But I figured... if I don't write it now, I never will.
+
+I've been thinking about the bar lately. About the way the light filters through the windows in the late afternoon, the sound of glasses clinking, and the smell of whatever it is you're always cooking that somehow manages to make it feel like home.
+
+I never told you this, but those quiet nights at Seventh Heaven just us, and maybe Marlene falling asleep in a booth meant more to me than I ever let on. Maybe it's because for the first time, I didn't have to pretend to be someone I wasn't. Maybe it's because, in that small corner of Midgar, I could breathe.
+
+You've always been stronger than me, you know. You smile even when the weight of the world is pressing down. You look at me and still see something good, even when I can't. I don't know how you do that. I don't know why you still believe in me.
+
+But I'm trying, Tifa. To be better. To stop running from the ghosts and the memories and the things I wish I could change. I don't know where this path leads, but if I ever find my way back... I hope you're there.
+
+Thanks for the quiet moments, for the reminders of who I really am, and for never giving up on me. You deserve more than I can give, but I'll keep trying, for you.
+
+Always,  
+Cloud
+`;
+
+
 export default function ComposeScreen() {
   const {
     message,
@@ -60,6 +81,8 @@ export default function ComposeScreen() {
     setFontName,
     setFontUrl,
   } = useFlutter();
+  const [isSampleActive, setIsSampleActive] = useState(false);
+  const originalMessage = "Enter your message here...";
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -162,12 +185,19 @@ export default function ComposeScreen() {
         <Text>Add Image to Letter</Text>
       </Pressable>
       <Pressable 
-        style={[styles.button, { backgroundColor: '#e0e0e0' }]} 
-        onPress={() => setMessage("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.")}
+        style={[styles.button, { backgroundColor: isSampleActive ? '#ffd6d6' : '#e0e0e0' }]} 
+        onPress={() => {
+          if (isSampleActive) {
+            setMessage(originalMessage);
+          } else {
+            setMessage(cloudsLetter);
+          }
+          setIsSampleActive(!isSampleActive);
+        }}
       >
-        <Text>Fill Letter with Lorem Ipsum</Text>
+        <Text>{isSampleActive ? "Remove Sample Letter" : "Fill With Fake Love Letter"}</Text>
       </Pressable>
-      <Text style={{ fontFamily: fontName, fontSize: 20 }}>{message}</Text>
+     
     </ScrollView>
   );
 }
@@ -189,6 +219,7 @@ const styles = StyleSheet.create({
     padding: 16,
     fontSize: 16,
     minHeight: 200,
+    maxHeight: 300,
     textAlignVertical: "top",
     marginBottom: 32,
   },
