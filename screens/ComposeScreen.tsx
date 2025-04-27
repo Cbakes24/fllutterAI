@@ -14,7 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useFlutter } from "../context/FlutterContext";
 import * as Font from "expo-font";
 import * as FileSystem from "expo-file-system";
-import { letterThemes } from '../utils/letterThemes';
+import { letterThemes } from "../utils/letterThemes";
 
 const availableFonts = [
   {
@@ -178,21 +178,26 @@ export default function ComposeScreen() {
         )}
       </View>
       {/* ***** THEME PICKER ***** */}
-      <View style={{ flexDirection: "row", gap: 8 }}>
-        {Object.keys(letterThemes).map((themeKey) => (
-          <Pressable key={themeKey} onPress={() => setSelectedTheme(themeKey)}>
-            <Text
-              style={{
-                padding: 10,
-                borderWidth: 1,
-                borderColor: selectedTheme === themeKey ? "black" : "#ccc",
-              }}
+      <ScrollView horizontal>
+        <View style={{ flexDirection: "row", gap: 8 }}>
+          {Object.keys(letterThemes).map((themeKey) => (
+            <Pressable
+              key={themeKey}
+              onPress={() => setSelectedTheme(themeKey)}
             >
-              {letterThemes[themeKey].label}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
+              <Text
+                style={{
+                  padding: 10,
+                  borderWidth: 1,
+                  borderColor: selectedTheme === themeKey ? "black" : "#ccc",
+                }}
+              >
+                {letterThemes[themeKey].label}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      </ScrollView>
       <Pressable style={styles.button} onPress={pickImage}>
         <Text>Add Image to Letter</Text>
       </Pressable>
