@@ -8,29 +8,15 @@ import {
   Image,
   ScrollView,
   Pressable,
+  Dimensions,
+  useWindowDimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import RNHTMLtoPDF from "react-native-html-to-pdf";
 import * as Sharing from "expo-sharing";
 import { useFlutter } from "../context/FlutterContext";
-
-const themes = {
-  wedding: {
-    fontColor: "#7b4b94",
-    bgColor: "#f3e8ff",
-    label: "Wedding 💍",
-  },
-  thankYou: {
-    fontColor: "#004225",
-    bgColor: "#d8f3dc",
-    label: "Thank You 💌",
-  },
-  baby: {
-    fontColor: "#3e7cbf",
-    bgColor: "#e7f0ff",
-    label: "Baby 👶",
-  },
-};
+import { useEffect, useState } from "react";
+import { letterThemes } from "../utils/letterThemes";
 
 export default function PreviewScreen() {
   const {
@@ -53,9 +39,21 @@ export default function PreviewScreen() {
     return null;
   }
 
-  const selectedThemeStyles = themes[selectedTheme] || themes.thankYou;
+  const selectedThemeStyles = letterThemes[selectedTheme] || letterThemes.thankYou;
+  // const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);
+
+  // useEffect(() => {
+  //   const subscription = Dimensions.addEventListener('change', ({ window }) => {
+  //     setScreenWidth(window.width);
+  //   });
+
+  //   return () => subscription.remove();
+  // }, []);
+
+  const { width } = useWindowDimensions();
 
   // Generate PDF Function
+  // add bgImage conditional
   const generatePDF = async () => {
     const htmlContent = `
       <html>
@@ -64,6 +62,7 @@ export default function PreviewScreen() {
             body {
               font-family: sans-serif;
               padding: 24px;
+             
               background-color: ${selectedThemeStyles.bgColor};
               color: ${selectedThemeStyles.fontColor};
             }
@@ -117,16 +116,48 @@ export default function PreviewScreen() {
         style={[
           styles.previewBox,
           {
-            backgroundColor: selectedThemeStyles.bgColor,
             borderColor: selectedThemeStyles.fontColor,
+            width: width > 600 ? 600 : 400,
+            overflow: "hidden",
           },
         ]}
       >
-        <Text style={{ fontFamily: fontName, fontSize: 20 }}>{message}</Text>
+        {letterThemes[selectedTheme].bgImage ? (
+          <Image
+            source={letterThemes[selectedTheme].bgImage}
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              top: 0,
+              left: 0,
+            }}
+            resizeMode="cover"
+          />
+        ) : (
+          <View
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              backgroundColor: letterThemes[selectedTheme].bgColor,
+            }}
+          />
+        )}
+        <Text
+          style={{
+            fontFamily: fontName,
+            fontSize: 20,
+            color: letterThemes[selectedTheme].fontColor,
+            zIndex: 1,
+          }}
+        >
+          {message}
+        </Text>
         {letterImage && (
           <Image
             source={{ uri: letterImage }}
-            style={styles.previewImage}
+            style={[styles.previewImage, { zIndex: 1 }]}
             resizeMode="cover"
           />
         )}
@@ -161,7 +192,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     borderWidth: 5,
-    width: "100%",
+    width: 500,
     minHeight: 200,
     marginBottom: 30,
     flex: 1,

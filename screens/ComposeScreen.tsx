@@ -14,6 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useFlutter } from "../context/FlutterContext";
 import * as Font from "expo-font";
 import * as FileSystem from "expo-file-system";
+import { letterThemes } from '../utils/letterThemes';
 
 const availableFonts = [
   {
@@ -29,25 +30,6 @@ const availableFonts = [
     url: "https://grbxgiwcabklftniwqpf.supabase.co/storage/v1/object/public/fonts//HeatherFont.otf",
   },
 ];
-
-const themes = {
-  wedding: {
-    fontColor: "#7b4b94",
-    bgColor: "#f3e8ff",
-    label: "Wedding 💍",
-  },
-  thankYou: {
-    fontColor: "#004225",
-    bgColor: "#d8f3dc",
-    label: "Thank You 💌",
-  },
-  baby: {
-    fontColor: "#3e7cbf",
-    bgColor: "#e7f0ff",
-    label: "Baby 👶",
-  },
-};
-
 
 const cloudsLetter = `
 Dear Tifa, 
@@ -67,7 +49,6 @@ Thanks for the quiet moments, for the reminders of who I really am, and for neve
 Always,  
 Cloud
 `;
-
 
 export default function ComposeScreen() {
   const {
@@ -99,7 +80,7 @@ export default function ComposeScreen() {
   const pickFont = async (font: any) => {
     try {
       await Font.loadAsync({
-        [font.name]: font.url
+        [font.name]: font.url,
       });
       setFontName(font.name);
       setFontUrl(font.url);
@@ -126,11 +107,33 @@ export default function ComposeScreen() {
       />
       <View
         style={{
-          backgroundColor: themes[selectedTheme].bgColor,
+          overflow: "hidden",
           padding: 16,
           borderRadius: 10,
         }}
       >
+        {letterThemes[selectedTheme].bgImage ? (
+          <Image
+            source={letterThemes[selectedTheme].bgImage}
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              top: 0,
+              left: 0,
+            }}
+            resizeMode="cover"
+          />
+        ) : (
+          <View
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              backgroundColor: letterThemes[selectedTheme].bgColor,
+            }}
+          />
+        )}
         <Text style={{ fontSize: 18, fontWeight: "500", marginTop: 32 }}>
           Choose Font:
         </Text>
@@ -157,7 +160,16 @@ export default function ComposeScreen() {
             </Pressable>
           ))}
         </View>
-        <Text style={{ fontFamily: fontName, fontSize: 20 }}>{message}</Text>
+        <Text
+          style={{
+            fontFamily: fontName,
+            fontSize: 20,
+            color: letterThemes[selectedTheme].fontColor,
+            zIndex: 1,
+          }}
+        >
+          {message}
+        </Text>
         {letterImage && (
           <Image
             source={{ uri: letterImage }}
@@ -167,7 +179,7 @@ export default function ComposeScreen() {
       </View>
       {/* ***** THEME PICKER ***** */}
       <View style={{ flexDirection: "row", gap: 8 }}>
-        {Object.keys(themes).map((themeKey) => (
+        {Object.keys(letterThemes).map((themeKey) => (
           <Pressable key={themeKey} onPress={() => setSelectedTheme(themeKey)}>
             <Text
               style={{
@@ -176,7 +188,7 @@ export default function ComposeScreen() {
                 borderColor: selectedTheme === themeKey ? "black" : "#ccc",
               }}
             >
-              {themes[themeKey].label}
+              {letterThemes[themeKey].label}
             </Text>
           </Pressable>
         ))}
@@ -184,8 +196,11 @@ export default function ComposeScreen() {
       <Pressable style={styles.button} onPress={pickImage}>
         <Text>Add Image to Letter</Text>
       </Pressable>
-      <Pressable 
-        style={[styles.button, { backgroundColor: isSampleActive ? '#ffd6d6' : '#e0e0e0' }]} 
+      <Pressable
+        style={[
+          styles.button,
+          { backgroundColor: isSampleActive ? "#ffd6d6" : "#e0e0e0" },
+        ]}
         onPress={() => {
           if (isSampleActive) {
             setMessage(originalMessage);
@@ -195,9 +210,12 @@ export default function ComposeScreen() {
           setIsSampleActive(!isSampleActive);
         }}
       >
-        <Text>{isSampleActive ? "Remove Sample Letter" : "Fill With Fake Love Letter"}</Text>
+        <Text>
+          {isSampleActive
+            ? "Remove Sample Letter"
+            : "Fill With Fake Love Letter"}
+        </Text>
       </Pressable>
-     
     </ScrollView>
   );
 }
