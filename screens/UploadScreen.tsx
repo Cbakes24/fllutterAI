@@ -23,9 +23,9 @@ export default function UploadScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Upload Your Handwriting Sample</Text>
-      <Pressable style={styles.button} onPress={pickImage}>
+      {/* <Pressable style={styles.button} onPress={pickImage}>
         <Text>Pick Handwriting Sample</Text>
-      </Pressable>
+      </Pressable> */}
       {image && <Image source={{ uri: image }} style={styles.preview} />}
       <Pressable
         style={styles.button}

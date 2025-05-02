@@ -8,6 +8,7 @@ import {
   ScrollView,
   Pressable,
   Image,
+  useWindowDimensions,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
@@ -90,9 +91,14 @@ export default function ComposeScreen() {
     }
   };
 
+  const { width } = useWindowDimensions();
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      {/* ===== HEADER SECTION ===== */}
       <Text style={styles.title}>Write Your Flutter ✍️</Text>
+
+      {/* ===== MESSAGE INPUT SECTION ===== */}
       <TextInput
         style={styles.input}
         multiline
@@ -105,13 +111,18 @@ export default function ComposeScreen() {
           }
         }}
       />
+
+      {/* ===== PREVIEW CONTAINER ===== */}
       <View
         style={{
           overflow: "hidden",
-          padding: 16,
+          padding: 20,
+          width: width > 600 ? 600 : 400,
           borderRadius: 10,
+          // backgroundColor: "red",
         }}
       >
+        {/* ===== BACKGROUND LAYER (Image or Color) ===== */}
         {letterThemes[selectedTheme].bgImage ? (
           <Image
             source={letterThemes[selectedTheme].bgImage}
@@ -131,10 +142,13 @@ export default function ComposeScreen() {
               width: "100%",
               height: "100%",
               backgroundColor: letterThemes[selectedTheme].bgColor,
+              padding: 20,
             }}
           />
         )}
-        <Text style={{ fontSize: 18, fontWeight: "500", marginTop: 32 }}>
+
+        {/* ===== FONT SELECTION SECTION ===== */}
+        <Text style={{ fontSize: 18, fontWeight: "500", marginTop: 3, }}>
           Choose Font:
         </Text>
         <View
@@ -160,16 +174,22 @@ export default function ComposeScreen() {
             </Pressable>
           ))}
         </View>
+
+        {/* ===== MESSAGE PREVIEW ===== */}
         <Text
           style={{
             fontFamily: fontName,
             fontSize: 20,
             color: letterThemes[selectedTheme].fontColor,
             zIndex: 1,
+            paddingRight: 30,
+          
           }}
         >
           {message}
         </Text>
+
+        {/* ===== UPLOADED IMAGE PREVIEW ===== */}
         {letterImage && (
           <Image
             source={{ uri: letterImage }}
@@ -177,7 +197,8 @@ export default function ComposeScreen() {
           />
         )}
       </View>
-      {/* ***** THEME PICKER ***** */}
+
+      {/* ===== THEME SELECTOR ===== */}
       <ScrollView horizontal>
         <View style={{ flexDirection: "row", gap: 8 }}>
           {Object.keys(letterThemes).map((themeKey) => (
@@ -188,8 +209,8 @@ export default function ComposeScreen() {
               <Text
                 style={{
                   padding: 10,
-                  borderWidth: 1,
-                  borderColor: selectedTheme === themeKey ? "black" : "#ccc",
+                  borderWidth: 3,
+                  borderColor: selectedTheme === themeKey ? letterThemes[selectedTheme].bgColor : "#ccc",
                 }}
               >
                 {letterThemes[themeKey].label}
@@ -198,6 +219,8 @@ export default function ComposeScreen() {
           ))}
         </View>
       </ScrollView>
+
+      {/* ===== ACTION BUTTONS ===== */}
       <Pressable style={styles.button} onPress={pickImage}>
         <Text>Add Image to Letter</Text>
       </Pressable>

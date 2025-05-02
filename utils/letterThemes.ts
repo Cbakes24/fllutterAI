@@ -18,16 +18,19 @@ export const letterThemes = {
     fontColor: "#000000",
     bgImage: require("../assets/roseLetter1.jpg"),
     label: "Rose 1 🌹",
+    bgColor: "pink",
   },
   rose2: {
     fontColor: "#000000",
     bgImage: require("../assets/roseLetter2.jpg"),
     label: "Rose 2 🌹🌹",
+    bgColor: "red",
   },
   fancyLines: {
     fontColor: "#000000",
     bgImage: require("../assets/lines.jpg"),
     label: "Fancy Lines ✒️",
+    bgColor: "blue",
   },
 };
 
